@@ -14,8 +14,12 @@ Download required specter files, create Conda environment for specter
 ```bash
 #  download required files
 cd specter
-wget https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/specter/archive.tar.gz  #TODO: provide this
-tar -xzvf archive.tar.gz -C ./model-original
+#wget https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/specter/archive.tar.gz
+#tar -xzvf archive.tar.gz -C ./model-original
+
+pip install gdown
+gdown https://drive.google.com/uc?id=18Ejk3gWTh3aTO2TZxAUc9wBO2xEmE0ab # or follow link and download
+tar -xzvf required.tar.gz
 
 conda create --name specter python=3.7 setuptools  
 conda activate specter  
@@ -35,7 +39,7 @@ Train specter on two datasets:
 The training for the orginal paper model was skipped due to the dataset not being available. The pretrained model from the original authors is used instead in the evaluation phase.
 
 ### Full
-Training the full model takes about 30h on a RTX2070. TODO: provice pretrained both
+Training the full model takes about 30h on a RTX2070. (Download already trained below)
 ```bash
 # run in <root>/specter folder
 mkdir --verbose --parents data/preproccesed/full
@@ -51,6 +55,13 @@ python specter/data_utils/create_training_files.py \
 -s model-output-full/ --num-epochs 2 --batch-size 4 \
 --train-path data/preprocessed/full/data-train.p --dev-path data/preprocessed/full/data-val.p \
 --num-train-instances 55 --cuda-device 0
+```
+
+Alternatively it is possible to download already trained models (only sample+full, since original was in the required files).
+```bash
+pip install gdown
+gdown https://drive.google.com/uc?id=1xt0LIp_CLXySntra_a8CUnpdnlQKsfMG # or follow link and download
+tar -xzvf models.tar.gz
 ```
 
 ### Sample
@@ -80,7 +91,6 @@ create embeddings of scidocs files for:
   - full dataset model
 
 ```bash
-# TODO: provide embeddings
 # run in <root>/specter folder
 conda activate specter
 ./scripts/run-embed.sh original model-original  # embed orginal model
@@ -88,6 +98,14 @@ conda activate specter
 ./scripts/run-embed.sh full model-output-full # embed 
 ```
 Embeddings are automatically moved to `<root>/scidocs/embdeddings` folder.
+
+Alternatively it is possible to download pre-computed embeddings for all models
+```bash
+cd scidocs # in scidocs folder
+pip install gdown
+gdown https://drive.google.com/uc?id=1RgQRfArI382po9aJHxxzYSyQfWSkw9EO # or follow link and download
+tar -xzvf embeddings.tar.gz
+```
 
 ### Setup SciDocs
 Create Conda environment

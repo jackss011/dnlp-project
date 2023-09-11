@@ -1,3 +1,5 @@
 *.pdf
 .git.old
 /extra
+*.tar
+*.tar.gz
