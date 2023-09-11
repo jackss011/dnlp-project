@@ -5,6 +5,8 @@ from scidocs import get_scidocs_metrics
 import argparse
 import json
 import pandas as pd
+import os
+from datetime import datetime
 
 
 pd.set_option('display.max_columns', None)
@@ -19,9 +21,22 @@ def main():
     parser.add_argument('--n-jobs', default=12, help='number of parallel jobs for classification (related to mesh/mag metrics)', type=int)
     parser.add_argument('--cuda-device', default=-1, help='specify if you want to use gpu for training the recommendation model; -1 means use cpu')
     parser.add_argument('--data-path', default=None, help='path to the data directory where scidocs files reside. If None, it will default to the `data/` directory')
+    parser.add_argument('--output-file', default=None, help='path where to save results')
     args = parser.parse_args()
 
     data_paths = DataPaths(args.data_path)
+
+    if args.output_file:
+        output_folder = os.path.dirname(args.output_file)
+        os.makedirs(output_folder, exist_ok=True)
+
+        tag = datetime.now().strftime("%Y-%m-%d_%H-%M__")
+        filename = os.path.basename(args.output_file)
+        if not filename.endswith('.csv'):
+            filename += '.csv'
+        tagged_filename = tag + filename
+        tagged_filepath = os.path.join(output_folder, tagged_filename)
+        print("Will save to:", tagged_filepath)
 
     scidocs_metrics = get_scidocs_metrics(
         data_paths,
@@ -42,7 +57,14 @@ def main():
                 key = k + '-' + kk
                 flat_metrics[key] = vv
     df = pd.DataFrame(list(flat_metrics.items())).T
+
+    print("Results:")
     print(df)
+
+    if args.output_file:
+        df.to_csv(tagged_filepath)
+        print("Saved to:", tagged_filepath)
+    
 
 if __name__ == '__main__':
     main()
