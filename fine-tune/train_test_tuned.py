@@ -1,34 +1,47 @@
 import pandas as pd
 import json
 import sys
-
-train_df = pd.read_csv('./data/train.csv')
-val_df = pd.read_csv('./data/val.csv')
-test_df = pd.read_csv('./data/test.csv')
-
-with open('./data/metadata.json', encoding='utf-8') as f:
-  metadata = json.load(f)
-
-def get_title_and_abs(pid):
-    paper = metadata[pid]
-    title, abstract = paper['title'], paper['abstract']
-    return title + ' [SEP] ' + (abstract or '')
-
-train_X = train_df['pid'].apply(get_title_and_abs).tolist()
-train_y = train_df['class_label'].tolist()
-
-val_X = val_df['pid'].apply(get_title_and_abs).tolist()
-val_y = val_df['class_label'].tolist()
-
-test_X = test_df['pid'].apply(get_title_and_abs).tolist()
-test_y = test_df['class_label'].tolist()
-
-num_labels = len(set(train_y))
-print(num_labels, len(train_X), len(val_X), len(test_X))
+import os
 
 from transformers import AutoTokenizer, AutoModel
 import torch
 import tqdm
+
+
+def load_dataset(ids_path, metadata):
+    df = pd.read_csv(ids_path)
+
+    invalid_ids = df['pid'].apply(lambda pid: pid not in metadata.keys())
+    df = df[~invalid_ids]
+
+    def get_title_and_abs(pid):
+        paper = metadata.get(pid)
+        title, abstract = paper['title'], paper['abstract']
+        return title + ' [SEP] ' + (abstract or '')
+    
+    X = df['pid'].apply(get_title_and_abs).tolist()
+    y = df['class_label'].tolist()
+    return X, y
+
+
+if '--mag' in sys.argv:
+    ids_folder = 'mag'
+elif '--mesh' in sys.argv:
+    ids_folder = 'mesh'
+else:
+    raise ValueError("select either --mag or --mesh datasets")
+print("selected:", ids_folder)
+
+with open('./data/cls-metadata.json', encoding='utf-8') as f:
+  metadata = json.load(f)
+
+train_X, train_y = load_dataset(f'./data/{ids_folder}/train.csv', metadata)
+val_X, val_y = load_dataset(f'./data/{ids_folder}/val.csv', metadata)
+test_X, test_y = load_dataset(f'./data/{ids_folder}/test.csv', metadata)
+
+num_labels = len(set(train_y))
+print(num_labels, len(train_X), len(val_X), len(test_X))
+
 
 model_name = 'allenai/specter'
 tokenizer = AutoTokenizer.from_pretrained(model_name)
@@ -55,14 +68,16 @@ def encode(model, tokenizer, X, batch_size=8, device='cuda'):
     all_embeddings = torch.stack(all_embeddings)
     return all_embeddings
 
+
 if '--load' not in sys.argv:
     train_encoded = encode(model, tokenizer, train_X)
     test_encoded = encode(model, tokenizer, test_X)
-    torch.save(train_encoded, './tmp/train.p')
-    torch.save(test_encoded, './tmp/test.p')
+    os.makedirs(f'./preprocessed/{ids_folder}', exist_ok=True)
+    torch.save(train_encoded, f'./preprocessed/{ids_folder}/train.p')
+    torch.save(test_encoded, f'./preprocessed/{ids_folder}/test.p')
 else:
-    train_encoded = torch.load('./tmp/train.p')
-    test_encoded = torch.load('./tmp/test.p')
+    train_encoded = torch.load(f'./preprocessed/{ids_folder}/train.p')
+    test_encoded = torch.load(f'./preprocessed/{ids_folder}/test.p')
 
 print(train_encoded.size())
 

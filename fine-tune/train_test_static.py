@@ -1,25 +1,12 @@
-# from transformers import AutoTokenizer, AutoModel
-
-# # load model and tokenizer
-# tokenizer = AutoTokenizer.from_pretrained('allenai/specter')
-# model = AutoModel.from_pretrained('allenai/specter')
-
-# papers = [{'title': 'BERT', 'abstract': 'We introduce a new language representation model called BERT'},
-#           {'title': 'Attention is all you need', 'abstract': ' The dominant sequence transduction models are based on complex recurrent or convolutional neural networks'}]
-
-# # concatenate title and abstract
-# title_abs = [d['title'] + tokenizer.sep_token + (d.get('abstract') or '') for d in papers]
-# # preprocess the input
-# inputs = tokenizer(title_abs, padding=True, truncation=True, return_tensors="pt", max_length=512)
-# result = model(**inputs)
-# # take the first token in the batch as the embedding
-# embeddings = result.last_hidden_state[:, 0, :]
-# print(embeddings)
-
 import json
 import pandas as pd
 import torch
+import sys
 
+from transformers import AutoTokenizer, AutoModel, AutoModelForSequenceClassification
+import torch
+import numpy as np
+from sklearn.metrics import accuracy_score, f1_score, classification_report
 
 
 class ClassificationDataset(torch.utils.data.Dataset):
@@ -27,6 +14,12 @@ class ClassificationDataset(torch.utils.data.Dataset):
         df = pd.read_csv(ids_path)
         with open(metadata_path, encoding='utf-8') as f:
             metadata = json.load(f)
+
+        metadata_ids = metadata.keys()
+        valid_ids = df['pid'].apply(lambda pid: pid in metadata_ids)
+        df = df[valid_ids]
+        print(len(df))
+        print("missing papers for ids", ids_path, "=", sum(~valid_ids))
 
         def get_title_and_abs(pid):
             paper = metadata[pid]
@@ -50,24 +43,30 @@ class ClassificationDataset(torch.utils.data.Dataset):
 
 
 model_name = 'allenai/specter'
+metadata_folder = './data/cls-metadata.json'
 
-from transformers import AutoTokenizer, AutoModel, AutoModelForSequenceClassification
-import torch
+if '--mag' in sys.argv:
+    ids_folder = 'mag'
+elif '--mesh' in sys.argv:
+    ids_folder = 'mesh'
+else:
+    raise ValueError("select either --mag or --mesh datasets")
+
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 print('tokenizer loaded')
 
-train_ds = ClassificationDataset('./data/metadata.json', './data/train.csv', tokenizer)
-val_ds = ClassificationDataset('./data/metadata.json', './data/val.csv', tokenizer)
-test_ds = ClassificationDataset('./data/metadata.json', './data/test.csv', tokenizer)
+
+train_ds = ClassificationDataset(metadata_folder, f'./data/{ids_folder}/train.csv', tokenizer)
+val_ds = ClassificationDataset(metadata_folder, f'./data/{ids_folder}/val.csv', tokenizer)
+test_ds = ClassificationDataset(metadata_folder, f'./data/{ids_folder}/test.csv', tokenizer)
 print('ds loaded')
 
 model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=train_ds.num_labels())
 model = model.to('cuda')
 print('model loaded')
 
-import numpy as np
-from sklearn.metrics import accuracy_score, f1_score, classification_report
+
 
 def compute_metrics(pred):
     predictions = np.argmax(pred.predictions, axis=-1)

@@ -1,3 +1,4 @@
+# MAG
 ## fine-tune: max_iter 100, hidden_layers 100
               precision    recall  f1-score   support
 
@@ -80,3 +81,24 @@ weighted avg       0.78      0.78      0.78      3751
     accuracy                           0.83      3751
    macro avg       0.82      0.82      0.82      3751
 weighted avg       0.83      0.83      0.83      3751
+
+
+# MESH
+# fixed max iter 1000, (100, 100) layers
+              precision    recall  f1-score   support
+
+           0       0.86      0.90      0.88       787
+           1       0.89      0.83      0.86       112
+           2       0.87      0.85      0.86       261
+           3       0.92      0.88      0.90       233
+           4       0.67      0.75      0.71       113
+           5       0.96      0.88      0.91       153
+           6       0.88      0.95      0.91        61
+           7       0.90      0.87      0.88       367
+           8       0.88      0.90      0.89       287
+           9       0.91      0.91      0.91       825
+          10       0.86      0.82      0.84       332
+
+    accuracy                           0.88      3531
+   macro avg       0.87      0.87      0.87      3531
+weighted avg       0.88      0.88      0.88      3531
