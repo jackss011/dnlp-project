@@ -18,8 +18,8 @@ class ClassificationDataset(torch.utils.data.Dataset):
         metadata_ids = metadata.keys()
         valid_ids = df['pid'].apply(lambda pid: pid in metadata_ids)
         df = df[valid_ids]
-        print(len(df))
         print("missing papers for ids", ids_path, "=", sum(~valid_ids))
+        print("valid papers for ids", ids_path, "=", sum(valid_ids))
 
         def get_title_and_abs(pid):
             paper = metadata[pid]
@@ -83,11 +83,11 @@ from transformers import Trainer, TrainingArguments
 
 training_args = TrainingArguments(
     output_dir='./results',          # output directory
-    num_train_epochs=1,              # total number of training epochs
-    per_device_train_batch_size=8,  # batch size per device during training
+    num_train_epochs=2,              # total number of training epochs
+    per_device_train_batch_size=4,  # batch size per device during training
     per_device_eval_batch_size=16,   # batch size for evaluation
     warmup_steps=10,                # number of warmup steps for learning rate scheduler
-    weight_decay=0.01,               # strength of weight decay
+    weight_decay=0.1,               # strength of weight decay
     logging_dir='./logs',            # directory for storing logs
     logging_steps=10,
     evaluation_strategy="epoch",
@@ -95,6 +95,7 @@ training_args = TrainingArguments(
     eval_steps=100,
     save_steps=100,
     load_best_model_at_end=True,
+    learning_rate=5e-7
 )
 
 trainer = Trainer(
