@@ -138,6 +138,18 @@ conda activate scidocs
 ```
 Results will be save in `<root>/scidocs/results`
 
+
+### [EXTRA]Generate t-SNE visualizations
+```bash
+# in scidocs folder
+python ./scripts/tsne.py embeddings/full/cls.jsonl data/mag/test.csv tsne/full --title Sparse
+python ./scripts/tsne.py embeddings/sample/cls.jsonl data/mag/test.csv tsne/sample --title Sample
+python ./scripts/tsne.py embeddings/original/cls.jsonl data/mag/test.csv tsne/sample --title Original
+```
+it is also possible to do a grid search on perplexuty and n_iter by adding `--grid-search` as a parameter of the script.
+
+Results will be in `<root>/scidocs/tsne` folder.
+
 ## Fine tune testing
 ### Create environment
 ```bash
@@ -145,11 +157,20 @@ cd fine-tune
 conda create -y --name fine-tune python==3.11
 conda activate fine-tune
 conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
-pip install chardet transformers scikit-learn
+pip install chardet transformers scikit-learn pandas
 ```
 
+### Download the dataset
+```bash
+## in fine-tune folder
+pip install gdown
+gdown https://drive.google.com/uc?id=1_EIfD4nopjPsgRpDH7YxinhDfIgHLZ7y or follow link and download
+tar -xzvf data-fine-tune.tar.gz
+```
+https://drive.google.com/file/d//view?usp=sharing
 ### Train and test the models
 ```bash
+# in fine tune folder
 # for fixed
 ./run-fixed.sh
 

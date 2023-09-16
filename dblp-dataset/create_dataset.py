@@ -1,3 +1,7 @@
+import json
+import os
+
+
 papers = {}
 
 # add valid papers to data (some papers do not have an abstract)
@@ -45,7 +49,9 @@ for paper in papers.values():
             missing_ref_count += 1
     paper['refs'] = valid_item_refs
 
-ref_count, missing_ref_count, valid_ref_count
+print("Initial links:", ref_count)
+print("Invalid links:", missing_ref_count)
+print("Valid links:", valid_ref_count)
 
 # compute hard negatives
 hn_count = 0
@@ -79,8 +85,6 @@ for id, paper in papers.items():
         assert(hn_id not in data[id].keys())
         data[id][hn_id] = {"count": 1}
 
-import json
-import os
 
 os.makedirs('full', exist_ok=True)
 
@@ -106,3 +110,5 @@ with open('full/val.txt', 'w') as f:
 
 with open('full/test.txt', 'w') as f:
    f.writelines([x + '\n' for x in ids_test])
+
+print('done')

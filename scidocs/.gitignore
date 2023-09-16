@@ -133,3 +133,7 @@ dmypy.json
 data
 embeddings
 results
+tsne
+*.jpeg
+*.jpg
+*.png
