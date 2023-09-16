@@ -1,5 +1,7 @@
 # DNLP project
-## Create DBLP dataset
+
+## Train specter
+### Create DBLP dataset
 Download the dataset, extract it and process it to be compatible with specter. Then copy it to specter data folder.
 ```bash
 cd dblp-dataset
@@ -9,7 +11,7 @@ python create_dataset.py
 cp -r full ../specter/data/training/full
 ```
 
-## Specter setup
+### Specter setup
 Download required specter files, create Conda environment for specter
 ```bash
 #  download required files
@@ -31,14 +33,14 @@ python setup.py install
 pip install overrides==3.1.0
 ```
 
-## Train models
+### Train models
 Train specter on two datasets:
   - **full**: the dataset create in step 1
   - **sample**: a small sample of 60 papers used to measure baseline performace
 
 The training for the orginal paper model was skipped due to the dataset not being available. The pretrained model from the original authors is used instead in the evaluation phase.
 
-### Full
+#### Full
 Training the full model takes about 30h on a RTX2070. (Download already trained below)
 ```bash
 # run in <root>/specter folder
@@ -64,7 +66,7 @@ gdown https://drive.google.com/uc?id=1xt0LIp_CLXySntra_a8CUnpdnlQKsfMG # or foll
 tar -xzvf models.tar.gz
 ```
 
-### Sample
+#### Sample
 Very quick training due to small dataset
 ```bash
 # run in <root>/specter folder
@@ -83,8 +85,8 @@ python specter/data_utils/create_training_files.py \
 --num-train-instances 55 --cuda-device 0
 ```
 
-## Evaluation (SciDocs)
-### Embeddings
+### Evaluation (SciDocs)
+#### Embeddings
 create embeddings of scidocs files for:
   - pretraining original model
   - small sample model
@@ -107,7 +109,7 @@ gdown https://drive.google.com/uc?id=1RgQRfArI382po9aJHxxzYSyQfWSkw9EO # or foll
 tar -xzvf embeddings.tar.gz
 ```
 
-### Setup SciDocs
+#### Setup SciDocs
 Create Conda environment
 ```bash
 cd scidocs
@@ -134,4 +136,24 @@ conda activate scidocs
 ./run-evaluate.sh embeddings/sample results/sample.csv
 ./run-evaluate.sh embeddings/full results/full.csv
 ```
-Results will be save in `<roor>/scidocs/results`
+Results will be save in `<root>/scidocs/results`
+
+## Fine tune testing
+### Create environment
+```bash
+cd fine-tune
+conda create -y --name fine-tune python==3.11
+conda activate fine-tune
+conda install pytorch torchvision torchaudio pytorch-cuda=11.7 -c pytorch -c nvidia
+pip install chardet transformers scikit-learn
+```
+
+### Train and test the models
+```bash
+# for fixed
+./run-fixed.sh
+
+# for fine tuning
+./run-tuned.sh
+```
+Results will be stored in the `<root>/fine-tune/metrics` folder
