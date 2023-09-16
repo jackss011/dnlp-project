@@ -120,7 +120,7 @@ conda install -y -q -c conda-forge numpy pandas scikit-learn=0.22.2 jsonlines=3.
 conda install pytorch==1.13.0 torchvision==0.14.0 torchaudio==0.13.0 pytorch-cuda=11.6 -c pytorch -c nvidia
 sudo apt update
 sudo apt install build-essential
-pip install pytrec_eval awscli allennlp==0.9 overrides==3.1.0
+pip install pytrec_eval awscli allennlp==0.9 overrides==3.1.0 seaborn
 python setup.py install
 ```
 
@@ -164,7 +164,7 @@ pip install chardet transformers scikit-learn pandas
 ```bash
 ## in fine-tune folder
 pip install gdown
-gdown https://drive.google.com/uc?id=1_EIfD4nopjPsgRpDH7YxinhDfIgHLZ7y or follow link and download
+gdown https://drive.google.com/uc?id=1_EIfD4nopjPsgRpDH7YxinhDfIgHLZ7y # or follow link and download
 tar -xzvf data-fine-tune.tar.gz
 ```
 https://drive.google.com/file/d//view?usp=sharing
@@ -177,4 +177,4 @@ https://drive.google.com/file/d//view?usp=sharing
 # for fine tuning
 ./run-tuned.sh
 ```
-Results will be stored in the `<root>/fine-tune/metrics` folder
+Results will be stored in the `<root>/fine-tune/metrics` folder.

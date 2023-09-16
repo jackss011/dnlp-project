@@ -32,6 +32,12 @@ else:
     raise ValueError("select either --mag or --mesh datasets")
 print("selected:", ids_folder)
 
+model_name = 'allenai/specter'
+if '--scibert' in sys.argv:
+    model_name = 'allenai/scibert_scivocab_uncased'
+print('using model', model_name)
+
+
 with open('./data/cls-metadata.json', encoding='utf-8') as f:
   metadata = json.load(f)
 
@@ -40,13 +46,7 @@ val_X, val_y = load_dataset(f'./data/{ids_folder}/val.csv', metadata)
 test_X, test_y = load_dataset(f'./data/{ids_folder}/test.csv', metadata)
 
 num_labels = len(set(train_y))
-print(num_labels, len(train_X), len(val_X), len(test_X))
-
-
-model_name = 'allenai/specter'
-if '--scibert' in sys.argv:
-    model_name = 'allenai/scibert_scivocab_uncased'
-print('using model', model_name)
+# print(num_labels, len(train_X), len(val_X), len(test_X))
 
 
 tokenizer = AutoTokenizer.from_pretrained(model_name)

@@ -3,8 +3,8 @@ import pandas as pd
 import torch
 import sys
 import os
-
 from transformers import AutoTokenizer, AutoModel, AutoModelForSequenceClassification
+from transformers import Trainer, TrainingArguments
 import torch
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, classification_report
@@ -85,30 +85,28 @@ def compute_metrics(pred):
 
 
 
-from transformers import Trainer, TrainingArguments
-
 training_args = TrainingArguments(
-    output_dir='./results',          # output directory
-    num_train_epochs=1,              # total number of training epochs
-    per_device_train_batch_size=4,  # batch size per device during training
-    per_device_eval_batch_size=16,   # batch size for evaluation
-    warmup_steps=10,                # number of warmup steps for learning rate scheduler
-    weight_decay=0.1,               # strength of weight decay
-    logging_dir='./logs',            # directory for storing logs
+    output_dir='./results',         
+    num_train_epochs=1,             
+    per_device_train_batch_size=4, 
+    per_device_eval_batch_size=16,  
+    warmup_steps=10,                
+    weight_decay=0.1,               
+    logging_dir='./logs',           
     logging_steps=10,
     evaluation_strategy="epoch",
     save_strategy="epoch",
     eval_steps=100,
     save_steps=100,
     load_best_model_at_end=True,
-    # learning_rate=5e-5
+    learning_rate=5e-5,
 )
 
 trainer = Trainer(
-    model=model,                         # the instantiated 🤗 Transformers model to be trained
-    args=training_args,                  # training arguments, defined above
-    train_dataset=train_ds,         # training dataset
-    eval_dataset=val_ds,             # evaluation dataset
+    model=model,        
+    args=training_args,      
+    train_dataset=train_ds,   
+    eval_dataset=val_ds,            
     compute_metrics=compute_metrics,
 )
 
@@ -129,15 +127,4 @@ with open(save_file, 'a') as f:
     f.write('\n\n')
 
 
-
-# load model and tokenizer
-
-# result = model(**inputs)
 print('done')
-# preprocess the input
-
-# take the first token in the batch as the embedding
-# embeddings = result.last_hidden_state[:, 0, :]
-# print(embeddings, embeddings.requires_grad)
-
-
