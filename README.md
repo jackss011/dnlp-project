@@ -1,4 +1,8 @@
 # DNLP project
+The folders `specter` and `scidocs` contains the code taken directly from the repository owned by the papers author([Specter](https://github.com/allenai/specter), [SciDocs](https://github.com/allenai/scidocs)) with several modifications. The folder `dblp` folders contains files to create the sparse dataset. The folder `fine-tune` contains files file to test the model fine-tune performance.
+
+The following instructions can be used to create the files
+> NOTE: Only reproducible on Linux.
 
 ## Train specter
 ### Create DBLP dataset
@@ -12,13 +16,10 @@ cp -r full ../specter/data/training/full
 ```
 
 ### Specter setup
-Download required specter files, create Conda environment for specter
+Download required specter files, create Conda environment for specter.
 ```bash
 #  download required files
 cd specter
-#wget https://ai2-s2-research-public.s3-us-west-2.amazonaws.com/specter/archive.tar.gz
-#tar -xzvf archive.tar.gz -C ./model-original
-
 pip install gdown
 gdown https://drive.google.com/uc?id=18Ejk3gWTh3aTO2TZxAUc9wBO2xEmE0ab # or follow link and download
 tar -xzvf required.tar.gz
@@ -26,8 +27,7 @@ tar -xzvf required.tar.gz
 conda create --name specter python=3.7 setuptools  
 conda activate specter  
 conda install pytorch==1.13.0 torchvision==0.14.0 torchaudio==0.13.0 pytorch-cuda=11.6 -c pytorch -c nvidia
-sudo apt update
-sudo apt install build-essential
+sudo apt update & sudo apt install build-essential
 pip install -r requirements.txt  
 python setup.py install
 pip install overrides==3.1.0
@@ -41,7 +41,7 @@ Train specter on two datasets:
 The training for the orginal paper model was skipped due to the dataset not being available. The pretrained model from the original authors is used instead in the evaluation phase.
 
 #### Full
-Training the full model takes about 30h on a RTX2070. (Download already trained below)
+Training the full model takes about 30h on a RTX2070Super. (Download already trained below)
 ```bash
 # run in <root>/specter folder
 mkdir --verbose --parents data/preproccesed/full
