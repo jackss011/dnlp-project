@@ -11,6 +11,8 @@ from sklearn.cluster import DBSCAN, KMeans
 from sklearn.metrics import silhouette_score, homogeneity_completeness_v_measure, pairwise_distances
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 
 def load_dataset(ids_path, metadata):
@@ -97,13 +99,28 @@ else:
 print(train_encoded.size())
 
 
-# for i in [1, 5, 10, 25, 50, 75] + list(range(100, 701, 50)):
-#     pca = PCA(n_components=i)
-#     std = StandardScaler()
-#     # X = std.fit_transform(train_encoded)
-#     X = train_encoded
-#     pca.fit_transform(X)
-#     print(i, sum(pca.explained_variance_ratio_))
+n_components = list([5, 10, 25, 50, 75] + list(range(100, 701, 50)))
+variance_explained = []
+
+for nc in n_components:
+    pca = PCA(n_components=nc)
+    # std = StandardScaler()
+    # X = std.fit_transform(train_encoded)
+    X = train_encoded
+    pca.fit_transform(X)
+    ve = sum(pca.explained_variance_ratio_)
+    variance_explained.append(ve)
+    print(nc, ve)
+
+plt.tight_layout()
+sns.lineplot(x=n_components, y=variance_explained, palette=['o'])
+plt.ylabel("% variance explained")
+plt.xlabel('number of components')
+plt.title('MAG PCA')
+plt.grid()
+plt.savefig("out.jpg", format='jpeg', dpi=300)
+
+quit()
 
 pca = PCA(n_components=200)
 X_train = train_encoded
