@@ -7,7 +7,7 @@ import numpy as np
 from concurrent.futures import ThreadPoolExecutor
 
 
-embeddings_folder = 'embeddings/original'
+embeddings_folder = sys.argv[1]
 output_folder = 'pca-embeddings'
 n_jobs = 6
 

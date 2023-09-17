@@ -1,7 +1,7 @@
-# DNLP project
-The folders `specter` and `scidocs` contains the code taken directly from the repository owned by the papers author([Specter](https://github.com/allenai/specter), [SciDocs](https://github.com/allenai/scidocs)) with several modifications. The folder `dblp` folders contains files to create the sparse dataset. The folder `fine-tune` contains files file to test the model fine-tune performance.
+# DNLP Project: Text Classification
+The folders `specter` and `scidocs` contains the code taken directly from the repository provided by the papers author([Specter](https://github.com/allenai/specter), [SciDocs](https://github.com/allenai/scidocs)) with several modifications. The folder `dblp` folders contains files to create the sparse dataset. The folder `fine-tune` contains files file to test the model fine-tune performance. PCA files are in the `scidocs` folder since they use SciDocs's dataset.
 
-The following instructions can be used to create the files
+The following instructions can be used to reproduce all results.
 > NOTE: Only reproducible on Linux.
 
 ## Train specter
@@ -150,6 +150,22 @@ it is also possible to do a grid search on perplexuty and n_iter by adding `--gr
 
 Results will be in `<root>/scidocs/tsne` folder.
 
+### PCA evaluation
+```bash
+# in scidocs folder
+
+# create the embdeddings
+# requires scidocs dataset
+python ./scripts/pca.py data/specter-embeddings
+# outputs in pca-embeddings
+
+# run scidocs suite for each value of number of components
+./run-evaluate-pca.sh
+```
+Results are store in `pca-results` folder (values for the report are included in the repo). The `scripts/analyze-pca-results.ipynb` notebook can generate the performance graph included in the paper.
+
+The *number of component* values tested can be modified in the script `scidocs/scripts/pca.py`.
+
 ## Fine tune testing
 ### Create environment
 ```bash
@@ -171,10 +187,10 @@ https://drive.google.com/file/d//view?usp=sharing
 ### Train and test the models
 ```bash
 # in fine tune folder
-# for fixed
+# for fixed results
 ./run-fixed.sh
 
-# for fine tuning
+# for fine tuned results
 ./run-tuned.sh
 ```
 Results will be stored in the `<root>/fine-tune/metrics` folder.
