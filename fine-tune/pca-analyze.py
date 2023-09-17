@@ -2,17 +2,14 @@ import pandas as pd
 import json
 import sys
 import os
-
 from transformers import AutoTokenizer, AutoModel
 import torch
 import tqdm
 from sklearn.decomposition import PCA
-from sklearn.cluster import DBSCAN, KMeans
-from sklearn.metrics import silhouette_score, homogeneity_completeness_v_measure, pairwise_distances
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import GridSearchCV
 import seaborn as sns
 import matplotlib.pyplot as plt
+sns.set_theme(style="whitegrid", palette="pastel")
+sns.set_style("whitegrid")
 
 
 def load_dataset(ids_path, metadata):
@@ -117,41 +114,4 @@ sns.lineplot(x=n_components, y=variance_explained, palette=['o'])
 plt.ylabel("% variance explained")
 plt.xlabel('number of components')
 plt.title('MAG PCA')
-plt.grid()
-plt.savefig("out.jpg", format='jpeg', dpi=300)
-
-quit()
-
-pca = PCA(n_components=200)
-X_train = train_encoded
-# X_train = StandardScaler().fit_transform(X_train)
-X_train = pca.fit_transform(X_train)
-X_test = pca.transform(test_encoded)
-
-# m = pairwise_distances(X_train, X_train).reshape(-1)
-# print(m.mean(), m.std())
-
-# X_train = train_encoded
-
-grid_params = {
-    "eps": [6, 8, 10, 12, 14, 16],
-    "min_samples": [2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 30, 40, 50, 100, 150]
-}
-
-# for eps in grid_params['eps']:
-#     for min_samples in grid_params['min_samples']:
-#         clustering = DBSCAN(eps=eps, min_samples=min_samples)
-#         clustering.fit(X_train)
-#         print(eps, min_samples)
-#         print(len(set(clustering.labels_)))
-#         print(list(clustering.labels_).count(-1)/len(clustering.labels_))
-#         # print(silhouette_score(X_train, clustering.labels_))
-#         print(homogeneity_completeness_v_measure(clustering.labels_, train_y), '\n')
-
-
-# clusterer = KMeans(n_clusters=100, n_init=20)
-# clusterer.fit(X_train)
-# print(homogeneity_completeness_v_measure(clusterer.labels_, train_y))
-# print(silhouette_score(X_train, labels=clusterer.labels_))
-
-
+plt.savefig(f"pca-{ids_folder}.jpg", format='jpeg', dpi=300)
