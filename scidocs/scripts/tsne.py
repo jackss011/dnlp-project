@@ -15,13 +15,13 @@ parser = argparse.ArgumentParser(
     description='Generate t-SNE images for the selected ids samples',
     epilog='')
 
-parser.add_argument('embeddings_path')           # positional argument
-parser.add_argument('ids_path')      # option that takes a value
-parser.add_argument('save_folder', default='./tsne')
-parser.add_argument('--grid-search',action='store_true')  
-parser.add_argument('-p', '--perplexity', default=15, type=float)
-parser.add_argument('-i', '--iters', default=1500, type=int) 
-parser.add_argument('-t', '--title', default='t-SNE')   
+parser.add_argument('embeddings_path')           # path for embeddings jsonl
+parser.add_argument('ids_path')       # ids of papers to consider
+parser.add_argument('save_folder', default='./tsne')  #save location
+parser.add_argument('--grid-search',action='store_true')   # do a grid seach, saves one image for each combination. can take a lot of time.
+parser.add_argument('-p', '--perplexity', default=15, type=float)  # select perplexity, ignore if grid_seatch is True
+parser.add_argument('-i', '--iters', default=1500, type=int)   # n_iters, same as perplexity
+parser.add_argument('-t', '--title', default='t-SNE')    # title of the output image
 args = parser.parse_args()
 
 embeddings_path = args.embeddings_path

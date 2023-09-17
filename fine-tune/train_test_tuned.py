@@ -9,7 +9,7 @@ import torch
 import numpy as np
 from sklearn.metrics import accuracy_score, f1_score, classification_report
 
-
+# pytorch dataset
 class ClassificationDataset(torch.utils.data.Dataset):
     def __init__(self, metadata_path, ids_path, tokenizer):
         df = pd.read_csv(ids_path)
@@ -43,6 +43,7 @@ class ClassificationDataset(torch.utils.data.Dataset):
         return len(set(self.labels))
 
 
+# select the model
 model_name = 'allenai/specter'
 if '--scibert' in sys.argv:
     model_name = 'allenai/scibert_scivocab_uncased'
@@ -51,6 +52,7 @@ print('using model', model_name)
 
 metadata_folder = './data/cls-metadata.json'
 
+# select the task (mag or mesh)
 if '--mag' in sys.argv:
     ids_folder = 'mag'
 elif '--mesh' in sys.argv:
@@ -59,6 +61,7 @@ else:
     raise ValueError("select either --mag or --mesh datasets")
 
 
+# run the classification
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 print('tokenizer loaded')
 
@@ -119,6 +122,7 @@ res = classification_report(test_ds.labels, y_pred, digits=3)
 print(res)
 
 
+# store the results to file
 os.makedirs('./metrics/', exist_ok=True)
 save_file = f'./metrics/tuned.txt'
 with open(save_file, 'a') as f:
