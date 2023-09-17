@@ -134,7 +134,6 @@ data
 embeddings
 pca-embeddings
 results
-pca-results
 tsne
 *.jpeg
 *.jpg
