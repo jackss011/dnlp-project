@@ -30,11 +30,12 @@ def main():
         output_folder = os.path.dirname(args.output_file)
         os.makedirs(output_folder, exist_ok=True)
 
-        tag = datetime.now().strftime("%Y-%m-%d_%H-%M")
+        # tag = datetime.now().strftime("%Y-%m-%d_%H-%M")
         filename = os.path.basename(args.output_file)
         if not filename.endswith('.csv'):
             filename += '.csv'
-        tagged_filename = f"{filename}__{tag}"
+        # tagged_filename = f"{tag}__{filename}"
+        tagged_filename = f"{filename}"
         tagged_filepath = os.path.join(output_folder, tagged_filename)
         print("Will save to:", tagged_filepath)
 
