@@ -5,7 +5,7 @@ The following instructions can be used to reproduce all results.
 > NOTE: Only reproducible on Linux.
 
 ## Train specter
-### Create DBLP dataset
+### Create Sparse dataset
 Download the dataset, extract it and process it to be compatible with specter. Then copy it to specter data folder.
 ```bash
 cd dblp-dataset
