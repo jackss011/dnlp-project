@@ -75,7 +75,7 @@ def save_pca(embeddings, titles, X_train, n_components, save_file):
     print(f'inferred PCA[{n_components}]')
 
 # n_components_list = [100]
-n_components_list = [50, 75, 100, 150, 200, 300, 400, 500, 600, 700]
+n_components_list = [5, 10, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500, 600, 700]
 
 
 def run_task(papers_file_name, train_ids_files):

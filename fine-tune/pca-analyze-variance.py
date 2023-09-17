@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 sns.set_theme(style="whitegrid", palette="pastel")
 sns.set_style("whitegrid")
 
+# uses fine-tune environment
 
 def load_dataset(ids_path, metadata):
     df = pd.read_csv(ids_path)
@@ -110,7 +111,7 @@ for nc in n_components:
     print(nc, ve)
 
 plt.tight_layout()
-sns.lineplot(x=n_components, y=variance_explained, palette=['o'])
+sns.lineplot(x=n_components, y=variance_explained, palette=['o'], linewidth=2)
 plt.ylabel("% variance explained")
 plt.xlabel('number of components')
 plt.title('MAG PCA')
